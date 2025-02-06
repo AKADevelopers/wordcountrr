@@ -18,7 +18,7 @@ function App() {
         <Header />
         <main className="flex-grow pt-6 pb-16">
           <Routes>
-            <Route path="/" element={<WebsiteCounterPage />} />
+            <Route path="/" element={<TextEditor />} />
             <Route path="/text-editor" element={<TextEditor />} />
             <Route path="/compare" element={<TextCompare />} />
             <Route path="/website-counter" element={<WebsiteCounterPage />} />
