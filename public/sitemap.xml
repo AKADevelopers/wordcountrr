@@ -40,13 +40,13 @@
   
   <!-- Legal Pages -->
   <url>
-    <loc>https://wordcountrr.com/privacy</loc>
+    <loc>https://wordcountrr.com/privacy-policy</loc>
     <lastmod>2025-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wordcountrr.com/terms</loc>
+    <loc>https://wordcountrr.com/terms-of-service</loc>
     <lastmod>2025-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
