@@ -25,11 +25,6 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-              <Link to="/text-editor" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Text Editor
-              </Link>
-              </li>
-              <li>
                 <Link to="/compare" className="text-gray-600 hover:text-gray-900 transition-colors">
                   Compare Texts
                 </Link>
@@ -65,7 +60,7 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} wordcountrr. All rights reserved.
+              {new Date().getFullYear()} wordcountrr. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0">
               <div className="flex space-x-6">

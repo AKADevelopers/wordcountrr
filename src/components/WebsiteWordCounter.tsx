@@ -57,22 +57,22 @@ export default function WebsiteWordCounter() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-lg font-semibold mb-4">
+    <div className="bg-white p-3 sm:p-6 rounded-lg shadow-md">
+      <h3 className="text-base sm:text-xl font-semibold mb-3 sm:mb-4">
         <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Website Word Counter
         </span>
       </h3>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-2">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <div className="relative flex-1">
             <input
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="Enter website URL..."
-              className="w-full p-2 pr-8 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 pr-8 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
             />
             {url && (
               <button
@@ -84,46 +84,50 @@ export default function WebsiteWordCounter() {
               </button>
             )}
           </div>
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                const text = await navigator.clipboard.readText();
-                setUrl(text);
-                toast.success('URL pasted from clipboard');
-              } catch (err) {
-                toast.error('Failed to paste URL');
-              }
-            }}
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          >
-            <ClipboardDocumentIcon className="h-4 w-4" />
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50"
-          >
-            {loading ? (
-              <ArrowPathIcon className="h-4 w-4 mr-1.5 animate-spin" />
-            ) : (
-              <GlobeAltIcon className="h-4 w-4 mr-1.5" />
-            )}
-            Analyze
-          </button>
+          <div className="flex gap-2 justify-center sm:justify-start">
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const text = await navigator.clipboard.readText();
+                  setUrl(text);
+                  toast.success('URL pasted from clipboard');
+                } catch (err) {
+                  toast.error('Failed to paste URL');
+                }
+              }}
+              className="inline-flex items-center px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+              aria-label="Paste from clipboard"
+            >
+              <ClipboardDocumentIcon className="h-4 w-4" />
+              <span className="hidden sm:inline ml-1.5">Paste</span>
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex items-center px-2 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50"
+            >
+              {loading ? (
+                <ArrowPathIcon className="h-4 w-4 mr-1 sm:mr-1.5 animate-spin" />
+              ) : (
+                <GlobeAltIcon className="h-4 w-4 mr-1 sm:mr-1.5" />
+              )}
+              <span>Analyze</span>
+            </button>
+          </div>
         </div>
       </form>
 
       {stats && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-md">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="mt-3 sm:mt-4 p-2 sm:p-4 bg-gray-50 rounded-md">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <div>
-              <span className="text-sm text-gray-500">Words</span>
-              <p className="text-xl font-bold text-gray-900">{stats.wordCount}</p>
+              <span className="text-xs sm:text-sm text-gray-500">Words</span>
+              <p className="text-base sm:text-xl font-bold text-gray-900">{stats.wordCount}</p>
             </div>
             <div>
-              <span className="text-sm text-gray-500">Characters</span>
-              <p className="text-xl font-bold text-gray-900">{stats.characterCount}</p>
+              <span className="text-xs sm:text-sm text-gray-500">Characters</span>
+              <p className="text-base sm:text-xl font-bold text-gray-900">{stats.characterCount}</p>
             </div>
           </div>
         </div>

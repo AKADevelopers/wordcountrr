@@ -8,17 +8,32 @@ export interface FileProcessingResult {
   error?: string;
 }
 
+const ALLOWED_MIME_TYPES = {
+  'text/plain': ['txt'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['docx'],
+  'application/msword': ['doc'],
+  'application/pdf': ['pdf']
+};
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 export async function processFile(file: File): Promise<FileProcessingResult> {
   try {
-    // Validate file size (10MB limit)
-    if (file.size > 10 * 1024 * 1024) {
-      throw new Error('File size exceeds 10MB limit');
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`);
     }
 
-    // Validate file type
+    // Validate MIME type and extension
     const extension = file.name.split('.').pop()?.toLowerCase();
-    if (!['txt', 'docx', 'doc', 'pdf'].includes(extension || '')) {
-      throw new Error('Unsupported file format. Please upload TXT, DOCX, DOC, or PDF files only.');
+    const mimeType = file.type.toLowerCase();
+    
+    const isValidMimeType = Object.entries(ALLOWED_MIME_TYPES).some(([allowedMime, extensions]) => 
+      mimeType === allowedMime && extension && extensions.includes(extension)
+    );
+
+    if (!isValidMimeType) {
+      throw new Error('Invalid file type. Please upload TXT, DOCX, DOC, or PDF files only.');
     }
 
     const arrayBuffer = await file.arrayBuffer();
@@ -26,7 +41,8 @@ export async function processFile(file: File): Promise<FileProcessingResult> {
 
     switch (extension) {
       case 'txt':
-        text = await file.text();
+        const decoder = new TextDecoder('utf-8');
+        text = decoder.decode(arrayBuffer);
         break;
 
       case 'docx':
@@ -34,14 +50,9 @@ export async function processFile(file: File): Promise<FileProcessingResult> {
         const result = await mammoth.convertToHtml({ arrayBuffer });
         if (result.value) {
           text = result.value
-            // Preserve basic formatting
-            .replace(/<p>/g, '\n<p>')
-            .replace(/<h\d>/g, '\n<h>')
-            .replace(/<br>/g, '\n');
-        }
-        // Add error messages from mammoth if any
-        if (result.messages.length > 0) {
-          text += '\n\nConversion notes:\n' + result.messages.join('\n');
+            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove any script tags
+            .replace(/<[^>]+>/g, '\n') // Convert HTML tags to newlines
+            .replace(/&[^;]+;/g, ' '); // Convert HTML entities to spaces
         }
         break;
 
@@ -53,10 +64,17 @@ export async function processFile(file: File): Promise<FileProcessingResult> {
         throw new Error('Unsupported file format');
     }
 
+    // Validate extracted text
+    if (!text || text.trim().length === 0) {
+      throw new Error('No text content could be extracted from the file');
+    }
+
     return { success: true, text: text.trim() };
   } catch (error) {
-    console.error('File processing error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to process file';
-    return { success: false, text: '', error: errorMessage };
+    return {
+      success: false,
+      text: '',
+      error: error instanceof Error ? error.message : 'Failed to process file'
+    };
   }
 }
